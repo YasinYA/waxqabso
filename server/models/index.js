@@ -1,12 +1,6 @@
-const Sequelize = require("sequelize");
+const mongoose = require("mongoose");
 const dbConfig = require("../config.js");
 
-const dbConnectionUrl = `postgres://${dbConfig.pgUser}:${dbConfig.pgPassword}@${
-    dbConfig.pgHost
-}:${dbConfig.pgPort}/${dbConfig.pgDatabase}`;
+mongoose.connect(dbConfig.databaseUrl, { useNewUrlParser: true });
 
-let sequelize = new Sequelize(dbConnectionUrl, {
-    dialect: dbConfig.dialect
-});
-
-module.exports = sequelize;
+module.exports = mongoose.connection;

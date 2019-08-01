@@ -1,22 +1,24 @@
-const Sequelize = require("sequelize");
-const db = require("./index.js");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const EmailListModel = require("./emailList.js");
 
-const Member = db.define("member", {
+const memberSchema = new Schema({
     name: {
-        type: Sequelize.STRING
+        type: String
     },
     email: {
-        type: Sequelize.STRING,
+        type: String,
         unique: true
     },
+    email_list: {
+        type: Schema.Types.ObjectId,
+        ref: "EmailList"
+    },
     token: {
-        type: Sequelize.TEXT
+        type: String
     }
 });
 
-// Relationships 1:M
-Member.belongsTo(EmailListModel);
-EmailListModel.hasMany(Member);
+const Member = mongoose.model("Member", memberSchema);
 
 module.exports = Member;

@@ -1,26 +1,24 @@
-const Sequelize = require("sequelize");
-const db = require("./index.js");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const Hackathon = db.define("hackathon", {
-    start_date: {
-        type: Sequelize.STRING
-    },
-    end_date: {
-        type: Sequelize.STRING
-    },
-    start_time: {
-        type: Sequelize.STRING
-    },
-    end_time: {
-        type: Sequelize.STRING
-    },
+const hackathonSchema = new Schema({
+    start_date: String,
+    end_date: String,
+    start_time: String,
+    end_time: String,
     project: {
-        type: Sequelize.STRING,
+        type: String,
         unique: true
     },
+    hackers: {
+        type: Schema.Types.ObjectId,
+        ref: "Hacker"
+    },
     description: {
-        type: Sequelize.TEXT
+        type: String
     }
 });
+
+const Hackathon = mongoose.model("Hackathon", hackathonSchema);
 
 module.exports = Hackathon;

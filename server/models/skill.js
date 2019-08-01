@@ -1,13 +1,10 @@
-const Sequelize = require("sequelize");
-const db = require("./index.js");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const Skill = db.define("skill", {
-    name: {
-        type: Sequelize.STRING
-    },
-    level: {
-        type: Sequelize.INTEGER
-    }
+const skillSchema = new Schema({
+    name: String
 });
+
+const Skill = mongoose.model("Skill", skillSchema);
 
 module.exports = Skill;

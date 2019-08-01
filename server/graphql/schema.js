@@ -3,9 +3,7 @@ const { GraphQLObjectType, GraphQLSchema } = graphql;
 
 // => Schemas
 const hackathonSchema = require("./hackathonSchema.js");
-const hackathonHackerSchema = require("./hackathonHackerSchema.js");
 const hackerSchema = require("./hackerSchema.js");
-const hackerSkillSchema = require("./hackerSkillSchema.js");
 const skillSchema = require("./skillSchema.js");
 const emailListSchema = require("./emailListSchema.js");
 const memberSchema = require("./memberSchema.js");

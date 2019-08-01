@@ -1,14 +1,22 @@
-const Sequelize = require("sequelize");
-const db = require("./index.js");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const EmailList = db.define("email_list", {
+const emailListSchema = new Schema({
     name: {
-        type: Sequelize.STRING,
+        type: String,
         unique: true
     },
-    description: {
-        type: Sequelize.TEXT
-    }
+    hackers: {
+        type: Schema.Types.ObjectId,
+        ref: "Hacker"
+    },
+    members: {
+        type: Schema.Types.ObjectId,
+        ref: "Member"
+    },
+    description: String
 });
+
+const EmailList = mongoose.model("EmailList", emailListSchema);
 
 module.exports = EmailList;
