@@ -1,0 +1,23 @@
+node_js:
+    - 11.10.1
+sudo: required
+services:
+    - docker
+addons:
+    ssh_known_hosts: waxqabso.com
+before_install:
+    - openssl aes-256-cbc -K $encrypted_23e1e8ac8f85_key -iv $encrypted_23e1e8ac8f85_iv
+      -in deploy_rsa.enc -out deploy_rsa -d
+    - chmod 600 deploy_rsa
+    - mv deploy_rsa ~/.ssh/id_rsa
+    - docker build -t yasinya/client-test -f ./client/Dockerfile.dev ./client
+script:
+    - docker run yasinya/client-test npm run test -- --coverage
+after_success:
+    - docker build -t yasinya/client ./client
+    - docker build -t yasinya/api ./server
+    - docker build -t yasinya/nginx ./nginx
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push yasinya/client
+    - docker push yasinya/api
+    - docker push yasinya/nginx

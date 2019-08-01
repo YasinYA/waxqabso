@@ -1,0 +1,9 @@
+node_modules
+temp
+logs/*
+.git
+.gitlab
+.sass-cache
+.vscode
+.idea
+build
