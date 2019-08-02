@@ -23,10 +23,8 @@ const queryFields = {
             id: { type: GraphQLID }
         },
         resolve(parent, args) {
-            return MessageModel.findOne({
-                where: {
-                    id: args.id
-                }
+            return MessageModel.findById({
+                _id: args.id
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -35,7 +33,7 @@ const queryFields = {
     messages: {
         type: new GraphQLList(MessageType),
         resolve(parent, args) {
-            return MessageModel.findAll()
+            return MessageModel.find({})
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -52,7 +50,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return MessageModel.create({ ...args.input })
+            return new MessageModel({ ...args.input })
                 .then(member => member)
                 .catch(err => console.log("Error: " + err));
         }
@@ -65,10 +63,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return MessageModel.destroy({
-                where: {
-                    id: args.id
-                }
+            return MessageModel.findByIdAndDelete({
+                _id: args.id
             })
                 .then(result => ({
                     success: true,

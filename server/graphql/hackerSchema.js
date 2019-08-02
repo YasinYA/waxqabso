@@ -23,10 +23,8 @@ const queryFields = {
             id: { type: GraphQLID }
         },
         resolve(parent, args) {
-            return HackerModel.findOne({
-                where: {
-                    id: args.id
-                }
+            return HackerModel.findById({
+                _id: args.id
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -35,7 +33,7 @@ const queryFields = {
     hackers: {
         type: new GraphQLList(HackerType),
         resolve(parent, args) {
-            return HackerModel.findAll()
+            return HackerModel.find({})
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -53,11 +51,12 @@ const mutationFields = {
         },
         resolve(parent, args) {
             let hacker = args.input;
+            hacker.email_list = hacker.email_list;
             try {
                 hacker.token = jwt.sign(
                     {
                         hackerEmail: hacker.email,
-                        emailListId: hacker.emailListId
+                        email_list: hacker.email_list
                     },
                     secret
                 );
@@ -65,7 +64,7 @@ const mutationFields = {
                 throw Error(err);
             }
 
-            return HackerModel.create({ ...hacker })
+            return new HackerModel({ ...hacker })
                 .then(hacker => {
                     // send the email
                     sendEmail("welcome", {
@@ -88,10 +87,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return HackerModel.destroy({
-                where: {
-                    id: args.id
-                }
+            return HackerModel.findByIdAndDelete({
+                _id: args.id
             })
                 .then(result => ({
                     success: true,
@@ -115,28 +112,24 @@ const mutationFields = {
                 (err, data) => data
             );
             return HackerModel.findOne({
-                where: {
-                    email: hackerEmail
-                }
+                email: hackerEmail
             })
                 .then(hacker => {
-                    if (!hacker.emailListId)
+                    if (!hacker.email_list)
                         return {
                             success: false,
                             message: "You are already un-subscribed."
                         };
                     else {
-                        hacker.setEmail_list(null);
-                        hacker
-                            .update({
-                                token: ""
-                            })
-                            .then(updatedHacker => {
-                                return {
-                                    success: true,
-                                    message: "Successfully Un-Subscribed."
-                                };
-                            });
+                        HackerModel.findByIdAndUpdate(
+                            { _id: hacker.id },
+                            { token: "", email_list: null }
+                        ).then(updatedHacker => {
+                            return {
+                                success: true,
+                                message: "Successfully Un-Subscribed."
+                            };
+                        });
                     }
                 })
                 .catch(err => console.log("Error: " + err));
@@ -148,17 +141,18 @@ const mutationFields = {
             id: {
                 type: GraphQLID
             },
-            emaillistId: {
+            email_listId: {
                 type: GraphQLID
             }
         },
         resolve(parent, args) {
-            return HackerModel.findOne({
-                where: {
-                    id: args.id
-                }
-            })
-                .then(hacker => hacker.setEmail_list(args.emaillistId))
+            return HackerModel.findByIdAndUpdate(
+                {
+                    _id: args.id
+                },
+                { email_list: args.email_listId }
+            )
+                .then(hacker => hacker)
                 .catch(err => console.log("Error: " + err));
         }
     }

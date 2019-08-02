@@ -26,8 +26,6 @@ const Mutation = new GraphQLObjectType({
     name: "Mutation",
     fields: {
         ...hackathonSchema.mutationFields,
-        ...hackathonHackerSchema.mutationFields,
-        ...hackerSkillSchema.mutationFields,
         ...skillSchema.mutationFields,
         ...hackerSchema.mutationFields,
         ...emailListSchema.mutationFields,

@@ -23,10 +23,8 @@ const queryFields = {
             id: { type: GraphQLID }
         },
         resolve(parent, args) {
-            return MemberModel.findOne({
-                where: {
-                    id: args.id
-                }
+            return MemberModel.findById({
+                _id: args.id
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -35,7 +33,7 @@ const queryFields = {
     members: {
         type: new GraphQLList(MemberType),
         resolve(parent, args) {
-            return MemberModel.findAll()
+            return MemberModel.find({})
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -53,11 +51,12 @@ const mutationFields = {
         },
         resolve(parent, args) {
             let member = args.input;
+            member.email_list = args.email_list;
             try {
                 member.token = jwt.sign(
                     {
                         memberEmail: member.email,
-                        emailListId: member.emailListId
+                        email_list: member.email_list
                     },
                     secret
                 );
@@ -65,7 +64,7 @@ const mutationFields = {
                 throw Error(err);
             }
 
-            return MemberModel.create({ ...member })
+            return new MemberModel({ ...member })
                 .then(member => {
                     // send the email
                     sendEmail("welcomeMember", {
@@ -87,10 +86,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return MemberModel.destroy({
-                where: {
-                    id: args.id
-                }
+            return MemberModel.findByIdAndDelete({
+                _id: args.id
             })
                 .then(result => ({
                     success: true,
@@ -114,9 +111,7 @@ const mutationFields = {
                 (err, data) => data
             );
             return MemberModel.findOne({
-                where: {
-                    email: memberEmail
-                }
+                email: memberEmail
             })
                 .then(member => {
                     if (!member.emailListId)
@@ -125,17 +120,15 @@ const mutationFields = {
                             message: "You are already un-subscribed."
                         };
                     else {
-                        member.setEmail_list(null);
-                        member
-                            .update({
-                                token: ""
-                            })
-                            .then(updatedMember => {
-                                return {
-                                    success: true,
-                                    message: "Successfully Un-Subscribed."
-                                };
-                            });
+                        MemberModel.findByIdAndUpdate(
+                            { _id: member.id },
+                            { token: "", email_list: null }
+                        ).then(updatedMember => {
+                            return {
+                                success: true,
+                                message: "Successfully Un-Subscribed."
+                            };
+                        });
                     }
                 })
                 .catch(err => console.log("Error: " + err));
@@ -147,17 +140,18 @@ const mutationFields = {
             id: {
                 type: GraphQLID
             },
-            emaillistId: {
+            email_listId: {
                 type: GraphQLID
             }
         },
         resolve(parent, args) {
-            return MemberModel.findOne({
-                where: {
-                    id: args.id
-                }
-            })
-                .then(member => member.setEmail_list(args.emaillistId))
+            return MemberModel.findByIdAndUpdate(
+                {
+                    _id: args.id
+                },
+                { email_list: args.email_listId }
+            )
+                .then(member => member)
                 .catch(err => console.log("Error: " + err));
         }
     }

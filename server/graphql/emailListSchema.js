@@ -20,10 +20,8 @@ const queryFields = {
             id: { type: GraphQLID }
         },
         resolve(parent, args) {
-            return EmailListModel.findOne({
-                where: {
-                    id: args.id
-                }
+            return EmailListModel.findById({
+                _id: args.id
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -36,9 +34,7 @@ const queryFields = {
         },
         resolve(parent, args) {
             return EmailListModel.findOne({
-                where: {
-                    name: args.name
-                }
+                name: args.name
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -47,7 +43,7 @@ const queryFields = {
     emailLists: {
         type: new GraphQLList(EmailListType),
         resolve(parent, args) {
-            return EmailListModel.findAll()
+            return EmailListModel.find({})
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -64,7 +60,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return EmailListModel.create({
+            return new EmailListModel({
                 name: args.input.name,
                 description: args.input.description
             })
@@ -80,10 +76,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return EmailListModel.destroy({
-                where: {
-                    id: args.id
-                }
+            return EmailListModel.findByIdAndDelete({
+                _id: args.id
             })
                 .then(result => ({
                     success: true,

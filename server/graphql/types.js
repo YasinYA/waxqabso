@@ -1,4 +1,5 @@
 const graphql = require("graphql");
+const mongoose = require("mongoose");
 const {
     GraphQLString,
     GraphQLID,
@@ -13,9 +14,7 @@ const {
 // => Models
 const HackerModel = require("../models/hacker.js");
 const HackathonModel = require("../models/hackathon.js");
-const HackathonHackerModel = require("../models/hackathonHacker.js");
 const SkillModel = require("../models/skill.js");
-const HackerSkillModel = require("../models/hackerSkill.js");
 const EmailListModel = require("../models/emailList.js");
 const MemberModel = require("../models/member.js");
 
@@ -32,37 +31,33 @@ const HackerType = new GraphQLObjectType({
         hackathons: {
             type: new GraphQLList(HackathonType),
             resolve(parent, args) {
-                return HackathonHackerModel.findAll({
-                    where: {
-                        hackerId: parent.id
-                    },
-                    include: [HackathonModel]
-                }).then(result =>
-                    result.map(hackathonhacker => hackathonhacker.hackathon)
-                );
+                return HackerModel.findById({
+                    _id: parent.id
+                })
+                    .populate("hackathons")
+                    .then(hacker =>
+                        hacker.hackathons.map(hackathon => hackathon)
+                    );
             }
         },
         skills: {
             type: new GraphQLList(SkillType),
             resolve(parent, args) {
-                return HackerSkillModel.findAll({
-                    where: {
-                        hackerId: parent.id
-                    },
-                    include: [SkillModel]
-                }).then(result => result.map(hackerSkill => hackerSkill.skill));
+                return HackerSkillModel.findById({
+                    _id: parent.id
+                })
+                    .populate("skills")
+                    .then(hacker => hacker.skills.map(skill => skill));
             }
         },
         emailList: {
             type: EmailListType,
             resolve(parent, args) {
-                return HackerModel.findOne({
-                    where: {
-                        id: parent.id
-                    }
+                return HackerModel.findById({
+                    _id: parent.id
                 })
-                    .then(result => result.getEmail_list())
-                    .then(emaillist => emaillist)
+                    .populate("email_list")
+                    .then(hacker => hacker.email_list)
                     .catch(err => console.log("Error: " + err));
             }
         }
@@ -77,7 +72,7 @@ const HackerInputType = new GraphQLInputObjectType({
         email: { type: GraphQLString },
         job_title: { type: GraphQLString },
         company: { type: GraphQLString },
-        emailListId: { type: GraphQLID }
+        email_list: { type: GraphQLID }
     }
 });
 
@@ -95,14 +90,9 @@ const HackathonType = new GraphQLObjectType({
         hackers: {
             type: new GraphQLList(HackerType),
             resolve(parent, args) {
-                return HackathonHackerModel.findAll({
-                    where: {
-                        hackathonId: parent.id
-                    },
-                    include: [HackerModel]
-                }).then(result =>
-                    result.map(hackathonhacker => hackathonhacker.hacker)
-                );
+                return HackernModel.find({
+                    hackathons: mongoose.Types.ObjectId(parent.id)
+                }).then(hackers => hackers.map(hacker => hacker));
             }
         }
     })
@@ -120,24 +110,6 @@ const HackathonInputType = new GraphQLInputObjectType({
     }
 });
 
-// => Hackathon Hacker
-const HackathonHackerType = new GraphQLObjectType({
-    name: "HackathonHacker",
-    fields: () => ({
-        id: { type: GraphQLID },
-        hackathonId: { type: HackathonType },
-        hackerId: { type: HackerType }
-    })
-});
-
-const HackathonHackerInputType = new GraphQLInputObjectType({
-    name: "HackathonHackerInputType",
-    fields: {
-        hackathonId: { type: GraphQLID },
-        hackerId: { type: GraphQLID }
-    }
-});
-
 // => Member
 const MemberType = new GraphQLObjectType({
     name: "Member",
@@ -148,13 +120,10 @@ const MemberType = new GraphQLObjectType({
         emailList: {
             type: EmailListType,
             resolve(parent, args) {
-                return MemberModel.findOne({
-                    where: {
-                        id: parent.id
-                    }
+                return MemberModel.findById({
+                    _id: parent.id
                 })
-                    .then(member => member.getEmail_list())
-                    .then(emaillist => emaillist)
+                    .then(member => member.email_list)
                     .catch(err => console.log("Error: " + err));
             }
         }
@@ -166,7 +135,7 @@ const MemberInputType = new GraphQLInputObjectType({
     fields: {
         name: { type: GraphQLString },
         email: { type: GraphQLString },
-        emailListId: { type: GraphQLID }
+        email_listId: { type: GraphQLID }
     }
 });
 
@@ -180,12 +149,9 @@ const EmailListType = new GraphQLObjectType({
         hackers: {
             type: new GraphQLList(HackerType),
             resolve(parent, args) {
-                return EmailListModel.findOne({
-                    where: {
-                        id: parent.id
-                    }
+                return HackerModel.find({
+                    email_list: mongoose.Types.ObjectId(parent.id)
                 })
-                    .then(emailList => emailList.getHackers())
                     .then(hackers => hackers)
                     .catch(err => console.log("Error: " + err));
             }
@@ -193,12 +159,9 @@ const EmailListType = new GraphQLObjectType({
         members: {
             type: new GraphQLList(HackerType),
             resolve(parent, args) {
-                return EmailListModel.findOne({
-                    where: {
-                        id: parent.id
-                    }
+                return MemberModel.find({
+                    email_list: mongoose.Types.ObjectId(parent.id)
                 })
-                    .then(emailList => emailList.getMembers())
                     .then(members => members)
                     .catch(err => console.log("Error: " + err));
             }
@@ -229,24 +192,6 @@ const SkillInputType = new GraphQLInputObjectType({
     fields: {
         name: { type: GraphQLString },
         level: { type: GraphQLInt }
-    }
-});
-
-// => Hacker Skill
-const HackerSkillType = new GraphQLObjectType({
-    name: "HackerSkill",
-    fields: () => ({
-        id: { type: GraphQLID },
-        hackerId: { type: HackerType },
-        skillId: { type: SkillType }
-    })
-});
-
-const HackerSkillInputType = new GraphQLInputObjectType({
-    name: "HackerSkillInputType",
-    fields: {
-        hackerId: { type: GraphQLID },
-        skillId: { type: GraphQLID }
     }
 });
 
@@ -288,10 +233,6 @@ module.exports = {
     HackerInputType,
     HackathonType,
     HackathonInputType,
-    HackathonHackerType,
-    HackathonHackerInputType,
-    HackerSkillType,
-    HackerSkillInputType,
     SkillType,
     SkillInputType,
     EmailListType,

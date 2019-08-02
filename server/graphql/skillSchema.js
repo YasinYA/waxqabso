@@ -16,7 +16,7 @@ const queryFields = {
     skills: {
         type: new GraphQLList(SkillType),
         resolve(parent, args) {
-            return SkillModel.findAll()
+            return SkillModel.find({})
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -33,7 +33,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return SkillModel.create({
+            return new SkillModel({
                 name: args.input.name,
                 level: args.input.level
             })
@@ -49,10 +49,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return SkillModel.destroy({
-                where: {
-                    id: args.input.id
-                }
+            return SkillModel.findByIdAndDelete({
+                _id: args.input.id
             })
                 .then(result => ({
                     success: true,

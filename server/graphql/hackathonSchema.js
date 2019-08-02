@@ -19,10 +19,8 @@ const queryFields = {
             id: { type: GraphQLID }
         },
         resolve(parent, args) {
-            return HackathonModel.findOne({
-                where: {
-                    id: args.id
-                }
+            return HackathonModel.findById({
+                _id: args.id
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -31,7 +29,7 @@ const queryFields = {
     hackathons: {
         type: new GraphQLList(HackathonType),
         resolve(parent, args) {
-            return HackathonModel.findAll()
+            return HackathonModel.find({})
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -48,7 +46,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return HackathonModel.create({
+            return new HackathonModel({
                 start_time: args.input.start_time,
                 start_date: args.input.start_date,
                 end_time: args.input.end_time,
@@ -71,24 +69,19 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return HackathonModel.findOne({
-                where: {
-                    id: args.id
-                }
-            }).then(hackathon => {
-                hackathon.update({
+            return HackathonModel.findByIdAndUpdate(
+                { _id: args.id },
+                {
                     start_time: args.input.start_time,
                     start_date: args.input.start_date,
                     end_time: args.input.end_time,
                     end_date: args.input.end_date,
                     project: args.input.project,
                     description: args.input.description
-                });
-                return hackathon.save();
+                }
+            ).then(hackathon => {
+                return hackathon;
             });
-            then(updatedHackathon => updatedHackathon).catch(err =>
-                console.log("Error: " + err)
-            );
         }
     },
     deleteHackathon: {
@@ -99,10 +92,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return HackathonModel.destroy({
-                where: {
-                    id: args.id
-                }
+            return HackathonModel.findByIdAndDelete({
+                _id: args.id
             })
                 .then(result => ({
                     success: true,
