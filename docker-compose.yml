@@ -1,15 +1,5 @@
 version: "3"
 services:
-    postgres:
-        image: "postgres:latest"
-        restart: always
-        volumes:
-            - db-data:/var/lib/pg/data
-        environment:
-            - POSTGRES_DB=${PG_DATABASE}
-            - POSTGRES_USER=${PG_USER}
-            - POSTGRES_PASSWORD=${PG_PASSWORD}
-
     api:
         build:
             context: ./server
@@ -45,7 +35,3 @@ services:
             context: ./nginx
         ports:
             - "8000:80"
-
-volumes:
-    db-data:
-        driver: local

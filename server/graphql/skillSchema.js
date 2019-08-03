@@ -33,7 +33,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return new SkillModel({
+            return SkillModel.create({
                 name: args.input.name,
                 level: args.input.level
             })

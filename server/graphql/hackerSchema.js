@@ -64,7 +64,7 @@ const mutationFields = {
                 throw Error(err);
             }
 
-            return new HackerModel({ ...hacker })
+            return HackerModel.create({ ...hacker })
                 .then(hacker => {
                     // send the email
                     sendEmail("welcome", {

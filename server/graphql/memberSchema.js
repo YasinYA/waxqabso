@@ -64,7 +64,7 @@ const mutationFields = {
                 throw Error(err);
             }
 
-            return new MemberModel({ ...member })
+            return MemberModel.create({ ...member })
                 .then(member => {
                     // send the email
                     sendEmail("welcomeMember", {

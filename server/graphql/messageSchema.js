@@ -50,7 +50,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return new MessageModel({ ...args.input })
+            return MessageModel.create({ ...args.input })
                 .then(member => member)
                 .catch(err => console.log("Error: " + err));
         }

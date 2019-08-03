@@ -60,7 +60,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return new EmailListModel({
+            return EmailListModel.create({
                 name: args.input.name,
                 description: args.input.description
             })

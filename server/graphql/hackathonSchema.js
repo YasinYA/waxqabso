@@ -46,7 +46,7 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return new HackathonModel({
+            return HackathonModel.create({
                 start_time: args.input.start_time,
                 start_date: args.input.start_date,
                 end_time: args.input.end_time,
