@@ -68,7 +68,7 @@ function Footer({ ...props }) {
                             className={aClasses}
                             target="_blank"
                         >
-                            TechCave
+                            TecKave
                         </a>
                     </GridItem>
                 </GridContainer>

@@ -48,7 +48,7 @@ class Form extends React.Component {
                         <h4 className={classes.description}>
                             We won't just send you meaningless emails. We will
                             notify you for some great content about technology
-                            and update of our hackathons.
+                            and updates of our hackathons.
                         </h4>
 
                         <Query
