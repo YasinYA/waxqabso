@@ -16,7 +16,8 @@ const hackathonSchema = new Schema({
     },
     description: {
         type: String
-    }
+    },
+    finished: Boolean
 });
 
 const Hackathon = mongoose.model("Hackathon", hackathonSchema);

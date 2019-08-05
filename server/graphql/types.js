@@ -87,6 +87,7 @@ const HackathonType = new GraphQLObjectType({
         end_date: { type: GraphQLString },
         project: { type: GraphQLString },
         description: { type: GraphQLString },
+        finished: { type: GraphQLBoolean },
         hackers: {
             type: new GraphQLList(HackerType),
             resolve(parent, args) {
@@ -106,7 +107,8 @@ const HackathonInputType = new GraphQLInputObjectType({
         start_date: { type: GraphQLString },
         end_date: { type: GraphQLString },
         project: { type: GraphQLString },
-        description: { type: GraphQLString }
+        description: { type: GraphQLString },
+        finished: { type: GraphQLBoolean }
     }
 });
 

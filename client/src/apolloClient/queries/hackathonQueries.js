@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 const hackathons = gql`
-    {
-        hackathons {
+    query($finished: Boolean) {
+        hackathons(finished: $finished) {
             id
             start_date
             start_time
