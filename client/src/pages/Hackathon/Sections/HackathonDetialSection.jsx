@@ -1,19 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 
 // core components
 import GridContainer from 'components/Grid/GridContainer.jsx';
 import GridItem from 'components/Grid/GridItem.jsx';
-import Button from 'components/CustomButtons/Button.jsx';
 
 import hackathonDetialStyle from 'assets/jss/material-kit-react/views/detialPageSections/hackathonDetialStyle.jsx';
 
 class HackathonDetialSection extends React.Component {
     render() {
         const { classes, hackathon } = this.props;
-        const url = `/register/${hackathon.id}`;
 
         return (
             <div className={classes.section}>
@@ -45,24 +42,28 @@ class HackathonDetialSection extends React.Component {
                     <GridItem xs={12} sm={12} md={4}>
                         <img
                             src={require('../../../assets/img/hkimg1.jpeg')}
+                            alt=""
                             className={classes.img}
                         />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={4}>
                         <img
                             src={require('../../../assets/img/hkimg2.jpg')}
+                            alt=""
                             className={classes.img}
                         />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={4}>
                         <img
                             src={require('../../../assets/img/hkimg3.jpg')}
+                            alt=""
                             className={classes.img}
                         />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={4}>
                         <img
                             src={require('../../../assets/img/hkimg4.jpg')}
+                            alt=""
                             className={classes.img}
                         />
                     </GridItem>

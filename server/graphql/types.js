@@ -137,7 +137,7 @@ const MemberInputType = new GraphQLInputObjectType({
     fields: {
         name: { type: GraphQLString },
         email: { type: GraphQLString },
-        email_listId: { type: GraphQLID }
+        email_list: { type: GraphQLID }
     }
 });
 
