@@ -51,12 +51,11 @@ const mutationFields = {
         },
         resolve(parent, args) {
             let hacker = args.input;
-            hacker.email_list = hacker.email_list;
+            hacker.subscribed = true;
             try {
                 hacker.token = jwt.sign(
                     {
-                        hackerEmail: hacker.email,
-                        email_list: hacker.email_list
+                        hackerEmail: hacker.email
                     },
                     secret
                 );
@@ -115,7 +114,7 @@ const mutationFields = {
                 email: hackerEmail
             })
                 .then(hacker => {
-                    if (!hacker.email_list)
+                    if (!hacker.subscribed)
                         return {
                             success: false,
                             message: "You are already un-subscribed."
@@ -123,7 +122,7 @@ const mutationFields = {
                     else {
                         HackerModel.findByIdAndUpdate(
                             { _id: hacker.id },
-                            { token: "", email_list: null }
+                            { token: "", subscribed: false }
                         ).then(updatedHacker => {
                             return {
                                 success: true,
@@ -132,27 +131,6 @@ const mutationFields = {
                         });
                     }
                 })
-                .catch(err => console.log("Error: " + err));
-        }
-    },
-    subHacker: {
-        type: HackerType,
-        args: {
-            id: {
-                type: GraphQLID
-            },
-            email_listId: {
-                type: GraphQLID
-            }
-        },
-        resolve(parent, args) {
-            return HackerModel.findByIdAndUpdate(
-                {
-                    _id: args.id
-                },
-                { email_list: args.email_listId }
-            )
-                .then(hacker => hacker)
                 .catch(err => console.log("Error: " + err));
         }
     }

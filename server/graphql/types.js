@@ -15,7 +15,6 @@ const {
 const HackerModel = require("../models/hacker.js");
 const HackathonModel = require("../models/hackathon.js");
 const SkillModel = require("../models/skill.js");
-const EmailListModel = require("../models/emailList.js");
 const MemberModel = require("../models/member.js");
 
 // => Hacker
@@ -28,6 +27,9 @@ const HackerType = new GraphQLObjectType({
         email: { type: GraphQLString },
         job_title: { type: GraphQLString },
         company: { type: GraphQLString },
+        subscribed: {
+            type: GraphQLBoolean
+        },
         hackathons: {
             type: new GraphQLList(HackathonType),
             resolve(parent, args) {
@@ -49,17 +51,6 @@ const HackerType = new GraphQLObjectType({
                     .populate("skills")
                     .then(hacker => hacker.skills.map(skill => skill));
             }
-        },
-        emailList: {
-            type: EmailListType,
-            resolve(parent, args) {
-                return HackerModel.findById({
-                    _id: parent.id
-                })
-                    .populate("email_list")
-                    .then(hacker => hacker.email_list)
-                    .catch(err => console.log("Error: " + err));
-            }
         }
     })
 });
@@ -71,8 +62,7 @@ const HackerInputType = new GraphQLInputObjectType({
         phone: { type: GraphQLString },
         email: { type: GraphQLString },
         job_title: { type: GraphQLString },
-        company: { type: GraphQLString },
-        email_list: { type: GraphQLID }
+        company: { type: GraphQLString }
     }
 });
 
@@ -119,16 +109,7 @@ const MemberType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         email: { type: GraphQLString },
-        emailList: {
-            type: EmailListType,
-            resolve(parent, args) {
-                return MemberModel.findById({
-                    _id: parent.id
-                })
-                    .then(member => member.email_list)
-                    .catch(err => console.log("Error: " + err));
-            }
-        }
+        subscribed: { type: GraphQLBoolean }
     })
 });
 
@@ -136,14 +117,13 @@ const MemberInputType = new GraphQLInputObjectType({
     name: "MemberInputType",
     fields: {
         name: { type: GraphQLString },
-        email: { type: GraphQLString },
-        email_list: { type: GraphQLID }
+        email: { type: GraphQLString }
     }
 });
 
-// => EmailList
-const EmailListType = new GraphQLObjectType({
-    name: "EmailList",
+// => HackerMail
+const HackerMail = new GraphQLObjectType({
+    name: "HackerMail",
     fields: () => ({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
@@ -157,7 +137,25 @@ const EmailListType = new GraphQLObjectType({
                     .then(hackers => hackers)
                     .catch(err => console.log("Error: " + err));
             }
-        },
+        }
+    })
+});
+
+const HackerMailInputType = new GraphQLInputObjectType({
+    name: "HackerMailInputType",
+    fields: {
+        name: { type: GraphQLString },
+        description: { type: GraphQLString }
+    }
+});
+
+// => MemberMail
+const MemberMail = new GraphQLObjectType({
+    name: "MemberMail",
+    fields: () => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
         members: {
             type: new GraphQLList(HackerType),
             resolve(parent, args) {
@@ -171,8 +169,8 @@ const EmailListType = new GraphQLObjectType({
     })
 });
 
-const EmailListInputType = new GraphQLInputObjectType({
-    name: "EmailListInputType",
+const MemberMailInputType = new GraphQLInputObjectType({
+    name: "MemberMailInputType",
     fields: {
         name: { type: GraphQLString },
         description: { type: GraphQLString }
@@ -237,8 +235,6 @@ module.exports = {
     HackathonInputType,
     SkillType,
     SkillInputType,
-    EmailListType,
-    EmailListInputType,
     MemberType,
     MemberInputType,
     MessageType,

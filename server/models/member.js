@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const EmailListModel = require("./emailList.js");
 
 const memberSchema = new Schema({
     name: {
@@ -10,9 +9,9 @@ const memberSchema = new Schema({
         type: String,
         unique: true
     },
-    email_list: {
-        type: Schema.Types.ObjectId,
-        ref: "EmailList"
+    subscribed: {
+        type: Boolean,
+        default: true
     },
     token: {
         type: String

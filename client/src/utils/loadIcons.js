@@ -6,6 +6,7 @@ import {
     faTools,
     faGifts,
     faCheckSquare,
+    faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
@@ -17,5 +18,6 @@ library.add(
     faTools,
     faGifts,
     faCheckSquare,
+    faTimes,
     fab,
 );

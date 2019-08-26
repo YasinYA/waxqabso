@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const EmailListModel = require("./emailList.js");
 
 const hackerSchema = new Schema({
     name: String,
@@ -15,13 +14,13 @@ const hackerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Hackathon"
     },
-    email_list: {
-        type: Schema.Types.ObjectId,
-        ref: "EmailList"
-    },
     skills: {
         type: Schema.Types.ObjectId,
         ref: "Skill"
+    },
+    subscribed: {
+        type: Boolean,
+        default: true
     },
     token: {
         type: String

@@ -11,6 +11,7 @@ import GridContainer from 'components/Grid/GridContainer.jsx';
 import GridItem from 'components/Grid/GridItem.jsx';
 import Parallax from 'components/Parallax/Parallax.jsx';
 import Thankyou from 'components/Thankyou/Thankyou.jsx';
+import ErrorHandler from 'components/ErrorHandler/ErrorHandler.jsx';
 
 import subscriptionPageStyle from 'assets/jss/material-kit-react/views/subscriptionPage.jsx';
 
@@ -22,13 +23,25 @@ class SubscribePage extends React.Component {
         super(props);
         this.state = {
             success: false,
+            error: false,
+            message: '',
         };
     }
 
-    successSection(success) {
-        this.setState({
-            success,
-        });
+    successSection({ success, message }) {
+        if (success) {
+            this.setState({
+                success,
+                error: false,
+                message,
+            });
+        } else {
+            this.setState({
+                success,
+                error: true,
+                message,
+            });
+        }
     }
 
     displaySections(classes) {
@@ -39,8 +52,17 @@ class SubscribePage extends React.Component {
         if (this.state.success) {
             return (
                 <Thankyou
-                    title="Thank You For Susbcribing"
+                    title={`${this.state.message}.Thank you for joining us`}
                     description="We will make sure that you get notified for valuable content."
+                />
+            );
+        }
+
+        if (this.state.error) {
+            return (
+                <ErrorHandler
+                    title={`${this.state.message}`}
+                    description="Relax, you are still with us."
                 />
             );
         }
