@@ -1,18 +1,13 @@
-node_js:
-    - 11.10.1
 sudo: required
 services:
     - docker
-addons:
-    ssh_known_hosts: waxqabso.com
+
 before_install:
-    - openssl aes-256-cbc -K $encrypted_23e1e8ac8f85_key -iv $encrypted_23e1e8ac8f85_iv
-      -in deploy_rsa.enc -out deploy_rsa -d
-    - chmod 600 deploy_rsa
-    - mv deploy_rsa ~/.ssh/id_rsa
     - docker build -t yasinya/client-test -f ./client/Dockerfile.dev ./client
+
 script:
     - docker run yasinya/client-test npm run test -- --coverage
+
 after_success:
     - docker build -t yasinya/client ./client
     - docker build -t yasinya/api ./server
@@ -21,3 +16,16 @@ after_success:
     - docker push yasinya/client
     - docker push yasinya/api
     - docker push yasinya/nginx
+
+deploy:
+    provider: elasticbeanstalk
+    region: us-east-2
+    app: waxqabso
+    env: Waxqabso-env
+    bucket_name: elasticbeanstalk-us-east-2-100593488730
+    bucket_path: waxqabso-path
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key:
+        secure: $AWS_SECRET_KEY
