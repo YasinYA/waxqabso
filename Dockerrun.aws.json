@@ -5,26 +5,29 @@
             "name": "client",
             "image": "yasinya/client",
             "hostname": "client",
-            "essential": false
+            "essential": false,
+            "memory": 128
         },
         {
             "name": "api",
             "image": "yasinya/api",
             "hostname": "api",
-            "essential": false
+            "essential": false,
+            "memory": 128
         },
         {
             "name": "nginx",
             "image": "yasinya/nginx",
             "hostname": "nginx",
             "essentail": true,
+            "memory": 128,
             "portMappings": [
                 {
                     "hostPort": 80,
                     "containerPort": 80
                 }
             ],
-            "links": ["client", "server"]
+            "links": ["client", "api"]
         }
     ]
 }
