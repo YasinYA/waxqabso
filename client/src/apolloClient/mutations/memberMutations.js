@@ -1,11 +1,10 @@
 import gql from 'graphql-tag';
 
 const addMember = gql`
-    mutation addMember($name: String!, $email: String!, $emailListId: ID!) {
-        addMember(
-            input: { name: $name, email: $email, emailListId: $emailListId }
-        ) {
-            id
+    mutation addMember($name: String!, $email: String!) {
+        addMember(input: { name: $name, email: $email }) {
+            success
+            message
         }
     }
 `;

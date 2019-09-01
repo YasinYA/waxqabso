@@ -14,7 +14,11 @@ class FinishedHackathonSection extends React.Component {
             <div className={classes.section}>
                 <h2 className={classes.title}>FINISHED HACKATHONS</h2>
                 <div>
-                    <Hackathons buttonText="More Info" {...this.props} />
+                    <Hackathons
+                        buttonText="More Info"
+                        finished={true}
+                        {...this.props}
+                    />
                 </div>
             </div>
         );

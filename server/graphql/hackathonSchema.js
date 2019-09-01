@@ -3,6 +3,7 @@ const {
     GraphQLID,
     GraphQLList,
     GraphQLInt,
+    GraphQLBoolean,
     GraphQLNonNull,
     GraphQLSchema,
     GraphQLObjectType
@@ -19,10 +20,8 @@ const queryFields = {
             id: { type: GraphQLID }
         },
         resolve(parent, args) {
-            return HackathonModel.findOne({
-                where: {
-                    id: args.id
-                }
+            return HackathonModel.findById({
+                _id: args.id
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -30,8 +29,11 @@ const queryFields = {
     },
     hackathons: {
         type: new GraphQLList(HackathonType),
+        args: {
+            finished: { type: GraphQLBoolean }
+        },
         resolve(parent, args) {
-            return HackathonModel.findAll()
+            return HackathonModel.find({ finished: args.finished })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -54,7 +56,8 @@ const mutationFields = {
                 end_time: args.input.end_time,
                 end_date: args.input.end_date,
                 project: args.input.project,
-                description: args.input.description
+                description: args.input.description,
+                finished: args.input.finished
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -71,24 +74,14 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return HackathonModel.findOne({
-                where: {
-                    id: args.id
+            return HackathonModel.findByIdAndUpdate(
+                { _id: args.id },
+                {
+                    ...args.input
                 }
-            }).then(hackathon => {
-                hackathon.update({
-                    start_time: args.input.start_time,
-                    start_date: args.input.start_date,
-                    end_time: args.input.end_time,
-                    end_date: args.input.end_date,
-                    project: args.input.project,
-                    description: args.input.description
-                });
-                return hackathon.save();
+            ).then(hackathon => {
+                return hackathon;
             });
-            then(updatedHackathon => updatedHackathon).catch(err =>
-                console.log("Error: " + err)
-            );
         }
     },
     deleteHackathon: {
@@ -99,10 +92,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return HackathonModel.destroy({
-                where: {
-                    id: args.id
-                }
+            return HackathonModel.findByIdAndDelete({
+                _id: args.id
             })
                 .then(result => ({
                     success: true,

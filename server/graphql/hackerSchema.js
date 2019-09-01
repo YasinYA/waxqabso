@@ -23,10 +23,8 @@ const queryFields = {
             id: { type: GraphQLID }
         },
         resolve(parent, args) {
-            return HackerModel.findOne({
-                where: {
-                    id: args.id
-                }
+            return HackerModel.findById({
+                _id: args.id
             })
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
@@ -35,7 +33,7 @@ const queryFields = {
     hackers: {
         type: new GraphQLList(HackerType),
         resolve(parent, args) {
-            return HackerModel.findAll()
+            return HackerModel.find({})
                 .then(result => result)
                 .catch(err => console.log("Error: " + err));
         }
@@ -53,11 +51,11 @@ const mutationFields = {
         },
         resolve(parent, args) {
             let hacker = args.input;
+            hacker.subscribed = true;
             try {
                 hacker.token = jwt.sign(
                     {
-                        hackerEmail: hacker.email,
-                        emailListId: hacker.emailListId
+                        hackerEmail: hacker.email
                     },
                     secret
                 );
@@ -88,10 +86,8 @@ const mutationFields = {
             }
         },
         resolve(parent, args) {
-            return HackerModel.destroy({
-                where: {
-                    id: args.id
-                }
+            return HackerModel.findByIdAndDelete({
+                _id: args.id
             })
                 .then(result => ({
                     success: true,
@@ -115,50 +111,26 @@ const mutationFields = {
                 (err, data) => data
             );
             return HackerModel.findOne({
-                where: {
-                    email: hackerEmail
-                }
+                email: hackerEmail
             })
                 .then(hacker => {
-                    if (!hacker.emailListId)
+                    if (!hacker.subscribed)
                         return {
                             success: false,
                             message: "You are already un-subscribed."
                         };
                     else {
-                        hacker.setEmail_list(null);
-                        hacker
-                            .update({
-                                token: ""
-                            })
-                            .then(updatedHacker => {
-                                return {
-                                    success: true,
-                                    message: "Successfully Un-Subscribed."
-                                };
-                            });
+                        HackerModel.findByIdAndUpdate(
+                            { _id: hacker.id },
+                            { token: "", subscribed: false }
+                        ).then(updatedHacker => {
+                            return {
+                                success: true,
+                                message: "Successfully Un-Subscribed."
+                            };
+                        });
                     }
                 })
-                .catch(err => console.log("Error: " + err));
-        }
-    },
-    subHacker: {
-        type: HackerType,
-        args: {
-            id: {
-                type: GraphQLID
-            },
-            emaillistId: {
-                type: GraphQLID
-            }
-        },
-        resolve(parent, args) {
-            return HackerModel.findOne({
-                where: {
-                    id: args.id
-                }
-            })
-                .then(hacker => hacker.setEmail_list(args.emaillistId))
                 .catch(err => console.log("Error: " + err));
         }
     }

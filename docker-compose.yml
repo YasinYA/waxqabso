@@ -1,15 +1,5 @@
 version: "3"
 services:
-    postgres:
-        image: "postgres:latest"
-        restart: always
-        volumes:
-            - db-data:/var/lib/pg/data
-        environment:
-            - POSTGRES_DB=${PG_DATABASE}
-            - POSTGRES_USER=${PG_USER}
-            - POSTGRES_PASSWORD=${PG_PASSWORD}
-
     api:
         build:
             context: ./server
@@ -20,16 +10,13 @@ services:
             - /server/node_modules
             - ./server/:/server
         environment:
-            - PG_HOST=${PG_HOST}
-            - PG_DATABASE=${PG_DATABASE}
-            - PG_USER=${PG_USER}
-            - PG_PASSWORD=${PG_PASSWORD}
-            - PG_PORT=${PG_PORT}
+            - WAXQABSO_DATABASE_URL=${WAXQABSO_DATABASE_URL}
             - SERVICE=${SERVICE}
             - EMAIL=${EMAIL}
             - PASSWORD=${PASSWORD}
             - EMAIL_SECRET=${EMAIL_SECRET}
             - FULL_URL=${FULL_URL}
+            - NODE_ENV=development
 
     client:
         build:
@@ -48,7 +35,3 @@ services:
             context: ./nginx
         ports:
             - "8000:80"
-
-volumes:
-    db-data:
-        driver: local

@@ -6,6 +6,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import GridContainer from 'components/Grid/GridContainer.jsx';
 import GridItem from 'components/Grid/GridItem.jsx';
 
+import Hackathons from 'components/Hackathon/Hackathons.jsx';
+
 import hackathonStyle from 'assets/jss/material-kit-react/views/homePageSections/hackathonStyle.jsx';
 
 class HackathonSection extends React.Component {
@@ -17,10 +19,11 @@ class HackathonSection extends React.Component {
                 <div className={classes.textCenter}>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={12}>
-                            <h4 className={classes.textDark}>
-                                Still planning the next hackathon will update
-                                you shortly..
-                            </h4>
+                            <Hackathons
+                                buttonText="More Info"
+                                finished={false}
+                                {...this.props}
+                            />
                         </GridItem>
                     </GridContainer>
                 </div>

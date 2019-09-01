@@ -1,5 +1,4 @@
 import React from 'react';
-import { Query } from 'react-apollo';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -18,7 +17,6 @@ import Button from 'components/CustomButtons/Button.jsx';
 import Danger from 'components/Typography/Danger.jsx';
 import { Spinner } from 'components/Common';
 
-import { emailListByName } from '../../../apolloClient/queries/emailListQueries.js';
 import { addMember } from '../../../apolloClient/mutations/memberMutations.js';
 
 import formStyle from 'assets/jss/material-kit-react/views/formStyle.jsx';
@@ -48,21 +46,108 @@ class Form extends React.Component {
                         <h4 className={classes.description}>
                             We won't just send you meaningless emails. We will
                             notify you for some great content about technology
-                            and update of our hackathons.
+                            and updates of our hackathons.
                         </h4>
-
-                        <Query
-                            query={emailListByName}
-                            variables={{ name: 'Member List' }}
-                        >
-                            {({ loading, error, data }) => {
-                                if (loading) {
+                        <Formik
+                            validationSchema={subscriptionSchema}
+                            initialValues={{
+                                name: '',
+                                email: '',
+                            }}
+                            onSubmit={(values, actions) => {
+                                client
+                                    .mutate({
+                                        mutation: addMember,
+                                        variables: {
+                                            name: values.name,
+                                            email: values.email,
+                                        },
+                                    })
+                                    .then(({ data: { addMember } }) => {
+                                        this.props.success(addMember);
+                                    })
+                                    .catch(err => console.log(err));
+                            }}
+                            render={({
+                                values,
+                                errors,
+                                status,
+                                touched,
+                                handleBlur,
+                                handleChange,
+                                handleSubmit,
+                                isSubmitting,
+                            }) => {
+                                if (isSubmitting) {
                                     return (
-                                        <div className={classes.container}>
-                                            <GridContainer
-                                                justify="center"
-                                                alignItems="center"
+                                        <GridContainer justify="center">
+                                            <GridItem
+                                                xs={12}
+                                                sm={12}
+                                                md={6}
+                                                className={classNames(
+                                                    classes.textCenter,
+                                                    classes.title,
+                                                )}
                                             >
+                                                <Spinner
+                                                    size="3x"
+                                                    text="Subscribing..."
+                                                    textClass={classes.title}
+                                                />
+                                            </GridItem>
+                                        </GridContainer>
+                                    );
+                                } else {
+                                    return (
+                                        <form onSubmit={handleSubmit}>
+                                            <GridContainer justify="center">
+                                                <GridItem
+                                                    xs={12}
+                                                    sm={12}
+                                                    md={8}
+                                                >
+                                                    <CustomInput
+                                                        labelText="Name"
+                                                        id="name"
+                                                        name="name"
+                                                        type="text"
+                                                        onChange={handleChange}
+                                                        value={values.name}
+                                                        formControlProps={{
+                                                            fullWidth: true,
+                                                        }}
+                                                    />
+                                                    {errors.name &&
+                                                    touched.name ? (
+                                                        <Danger>
+                                                            {errors.name}
+                                                        </Danger>
+                                                    ) : null}
+                                                </GridItem>
+                                                <GridItem
+                                                    xs={12}
+                                                    sm={12}
+                                                    md={8}
+                                                >
+                                                    <CustomInput
+                                                        labelText="Email"
+                                                        id="email"
+                                                        name="email"
+                                                        type="email"
+                                                        onChange={handleChange}
+                                                        value={values.email}
+                                                        formControlProps={{
+                                                            fullWidth: true,
+                                                        }}
+                                                    />
+                                                    {errors.email &&
+                                                    touched.email ? (
+                                                        <Danger>
+                                                            {errors.email}
+                                                        </Danger>
+                                                    ) : null}
+                                                </GridItem>
                                                 <GridItem
                                                     xs={12}
                                                     sm={12}
@@ -71,170 +156,19 @@ class Form extends React.Component {
                                                         classes.textCenter
                                                     }
                                                 >
-                                                    <Spinner size="3x" />
+                                                    <Button
+                                                        color="primary"
+                                                        type="submit"
+                                                    >
+                                                        Count Me In
+                                                    </Button>
                                                 </GridItem>
                                             </GridContainer>
-                                        </div>
-                                    );
-                                } else {
-                                    return (
-                                        <Formik
-                                            validationSchema={
-                                                subscriptionSchema
-                                            }
-                                            initialValues={{
-                                                name: '',
-                                                email: '',
-                                                emailListId:
-                                                    data.emailListByName.id,
-                                            }}
-                                            onSubmit={(values, actions) => {
-                                                client
-                                                    .mutate({
-                                                        mutation: addMember,
-                                                        variables: {
-                                                            name: values.name,
-                                                            email: values.email,
-                                                            emailListId:
-                                                                values.emailListId,
-                                                        },
-                                                    })
-                                                    .then(member => {
-                                                        console.log(
-                                                            'Subscribed Successfully.',
-                                                        );
-                                                        this.props.success(
-                                                            true,
-                                                        );
-                                                    })
-                                                    .catch(err =>
-                                                        console.log(err),
-                                                    );
-                                            }}
-                                            render={({
-                                                values,
-                                                errors,
-                                                status,
-                                                touched,
-                                                handleBlur,
-                                                handleChange,
-                                                handleSubmit,
-                                                isSubmitting,
-                                            }) => {
-                                                if (isSubmitting) {
-                                                    return (
-                                                        <GridContainer justify="center">
-                                                            <GridItem
-                                                                xs={12}
-                                                                sm={12}
-                                                                md={6}
-                                                                className={classNames(
-                                                                    classes.textCenter,
-                                                                    classes.title,
-                                                                )}
-                                                            >
-                                                                <Spinner
-                                                                    size="3x"
-                                                                    text="Subscribing..."
-                                                                    textClass={
-                                                                        classes.title
-                                                                    }
-                                                                />
-                                                            </GridItem>
-                                                        </GridContainer>
-                                                    );
-                                                } else {
-                                                    return (
-                                                        <form
-                                                            onSubmit={
-                                                                handleSubmit
-                                                            }
-                                                        >
-                                                            <GridContainer justify="center">
-                                                                <GridItem
-                                                                    xs={12}
-                                                                    sm={12}
-                                                                    md={8}
-                                                                >
-                                                                    <CustomInput
-                                                                        labelText="Name"
-                                                                        id="name"
-                                                                        name="name"
-                                                                        type="text"
-                                                                        onChange={
-                                                                            handleChange
-                                                                        }
-                                                                        value={
-                                                                            values.name
-                                                                        }
-                                                                        formControlProps={{
-                                                                            fullWidth: true,
-                                                                        }}
-                                                                    />
-                                                                    {errors.name &&
-                                                                    touched.name ? (
-                                                                        <Danger>
-                                                                            {
-                                                                                errors.name
-                                                                            }
-                                                                        </Danger>
-                                                                    ) : null}
-                                                                </GridItem>
-                                                                <GridItem
-                                                                    xs={12}
-                                                                    sm={12}
-                                                                    md={8}
-                                                                >
-                                                                    <CustomInput
-                                                                        labelText="Email"
-                                                                        id="email"
-                                                                        name="email"
-                                                                        type="email"
-                                                                        onChange={
-                                                                            handleChange
-                                                                        }
-                                                                        value={
-                                                                            values.email
-                                                                        }
-                                                                        formControlProps={{
-                                                                            fullWidth: true,
-                                                                        }}
-                                                                    />
-                                                                    {errors.email &&
-                                                                    touched.email ? (
-                                                                        <Danger>
-                                                                            {
-                                                                                errors.email
-                                                                            }
-                                                                        </Danger>
-                                                                    ) : null}
-                                                                </GridItem>
-                                                                <GridItem
-                                                                    xs={12}
-                                                                    sm={12}
-                                                                    md={12}
-                                                                    className={
-                                                                        classes.textCenter
-                                                                    }
-                                                                >
-                                                                    <Button
-                                                                        color="primary"
-                                                                        type="submit"
-                                                                    >
-                                                                        Count Me
-                                                                        In
-                                                                    </Button>
-                                                                </GridItem>
-                                                            </GridContainer>
-                                                        </form>
-                                                    );
-                                                }
-                                            }}
-                                        />
+                                        </form>
                                     );
                                 }
                             }}
-                        </Query>
+                        />
                     </GridItem>
                 </GridContainer>
             </div>

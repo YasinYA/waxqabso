@@ -14,21 +14,32 @@ class Hackathons extends Component {
     }
 
     displayHackathons() {
-        const { classes } = this.props;
+        const { classes, finished } = this.props;
         return (
-            <Query query={hackathons}>
+            <Query query={hackathons} variables={{ finished }}>
                 {({ loading, error, data }) => {
                     if (loading) {
                         return <Spinner size="3x" />;
                     } else {
-                        return data.hackathons.map(hackathon => (
-                            <Hackathon
-                                key={hackathon.id}
-                                hackathon={hackathon}
-                                classes={classes}
-                                buttonText={this.props.buttonText}
-                            />
-                        ));
+                        return data.hackathons.length > 0 ? (
+                            data.hackathons.map(hackathon => (
+                                <Hackathon
+                                    key={hackathon.id}
+                                    hackathon={hackathon}
+                                    classes={classes}
+                                    buttonText={this.props.buttonText}
+                                />
+                            ))
+                        ) : finished ? (
+                            <h4 className={classes.textDark}>
+                                All hackathons are running.
+                            </h4>
+                        ) : (
+                            <h4 className={classes.textDark}>
+                                Still planning the next hackathon will update
+                                you shortly..
+                            </h4>
+                        );
                     }
                 }}
             </Query>

@@ -1,16 +1,12 @@
-const Sequelize = require("sequelize");
-const db = require("./index.js");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const Message = db.define("message", {
-    name: {
-        type: Sequelize.STRING
-    },
-    email: {
-        type: Sequelize.STRING
-    },
-    message: {
-        type: Sequelize.TEXT
-    }
+const messageSchema = new Schema({
+    name: String,
+    email: String,
+    message: String
 });
+
+const Message = mongoose.model("Message", messageSchema);
 
 module.exports = Message;

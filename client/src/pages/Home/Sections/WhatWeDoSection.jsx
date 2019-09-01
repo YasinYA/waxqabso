@@ -18,7 +18,7 @@ class WhatWeDoSection extends React.Component {
                     <GridItem xs={12} sm={12} md={8}>
                         <h2 className={classes.title}>WHAT WE DO</h2>
                         <h5 className={classes.description}>
-                            We are bunch of cool people, that come together to
+                            We are bunch of cool people, who come together to
                             help their people.
                         </h5>
                     </GridItem>
