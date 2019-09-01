@@ -23,9 +23,6 @@ services:
         ports:
             - "80:80"
             - "443:443"
-        volumes:
-            - /waxqabso-letsencyrpt/certbot/conf:/etc/letsencrypt
-            - /waxqabso-letsencyrpt/certbot/www:/var/www/certbot
 
 networks:
     default:
