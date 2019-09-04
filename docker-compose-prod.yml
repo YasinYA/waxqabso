@@ -11,7 +11,6 @@ services:
             - PASSWORD=${PASSWORD}
             - EMAIL_SECRET=${EMAIL_SECRET}
             - FULL_URL=${FULL_URL}
-            - NODE_ENV=development
 
     client:
         image: yasinya/client
