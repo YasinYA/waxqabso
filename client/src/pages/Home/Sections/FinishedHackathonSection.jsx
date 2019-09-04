@@ -16,6 +16,7 @@ class FinishedHackathonSection extends React.Component {
                 <div>
                     <Hackathons
                         buttonText="More Info"
+                        path="hackathon"
                         finished={true}
                         {...this.props}
                     />

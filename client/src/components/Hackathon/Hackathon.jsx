@@ -10,12 +10,12 @@ import CardBody from 'components/Card/CardBody.jsx';
 import CardFooter from 'components/Card/CardFooter.jsx';
 
 class Hackathon extends Component {
-    hackathonUrl(arg) {
-        return `/hackathon/${arg}`;
+    hackathonUrl(path, arg) {
+        return `/${path}/${arg}`;
     }
 
     render() {
-        const { classes, hackathon } = this.props;
+        const { classes, hackathon, path, buttonText } = this.props;
         return (
             <div>
                 <GridContainer>
@@ -50,9 +50,9 @@ class Hackathon extends Component {
                                     color="primary"
                                     className={classes.margin5}
                                     component={Link}
-                                    to={this.hackathonUrl(hackathon.id)}
+                                    to={this.hackathonUrl(path, hackathon.id)}
                                 >
-                                    {this.props.buttonText}
+                                    {buttonText}
                                 </Button>
                             </CardBody>
                             <CardFooter />

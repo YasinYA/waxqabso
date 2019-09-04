@@ -62,7 +62,7 @@ class SubscribePage extends React.Component {
             return (
                 <ErrorHandler
                     title={`${this.state.message}`}
-                    description="Relax, you are still with us."
+                    description="What are you trying to do."
                 />
             );
         }

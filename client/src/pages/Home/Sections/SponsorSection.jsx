@@ -29,15 +29,6 @@ class SponsorSection extends React.Component {
                             />
                         </div>
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                        <div className={classes.textCenter}>
-                            <img
-                                src={require('../../../assets/img/intech.jpg')}
-                                alt="Intech"
-                                className={classes.spaceBetween}
-                            />
-                        </div>
-                    </GridItem>
                 </GridContainer>
             </div>
         );

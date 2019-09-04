@@ -43,7 +43,7 @@ const queryFields = {
 // => Mutations
 const mutationFields = {
     addHacker: {
-        type: HackerType,
+        type: ResultType,
         args: {
             input: {
                 type: new GraphQLNonNull(HackerInputType)
@@ -52,6 +52,7 @@ const mutationFields = {
         resolve(parent, args) {
             let hacker = args.input;
             hacker.subscribed = true;
+            hacker.hackathons = new Array(hacker.hackathon_id);
             try {
                 hacker.token = jwt.sign(
                     {
@@ -73,9 +74,15 @@ const mutationFields = {
                         urlPath: "unsubhacker"
                     });
 
-                    return hacker;
+                    return {
+                        success: true,
+                        message: "Successfully Registered"
+                    };
                 })
-                .catch(err => console.log("Error: " + err));
+                .catch(err => ({
+                    success: false,
+                    message: "Something Went Wrong"
+                }));
         }
     },
     deleteHacker: {

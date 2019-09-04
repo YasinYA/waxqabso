@@ -11,7 +11,7 @@ import GridContainer from 'components/Grid/GridContainer.jsx';
 import GridItem from 'components/Grid/GridItem.jsx';
 import Parallax from 'components/Parallax/Parallax.jsx';
 import Thankyou from 'components/Thankyou/Thankyou.jsx';
-import { Spinner } from 'components/Common';
+import ErrorHandler from 'components/ErrorHandler/ErrorHandler.jsx';
 
 import registrationPageStyle from 'assets/jss/material-kit-react/views/registrationPage.jsx';
 
@@ -22,48 +22,53 @@ class RegistrationPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false,
             success: false,
+            error: false,
+            message: '',
         };
     }
 
-    successSection(success) {
-        this.setState({
-            success,
-            loading: false,
-        });
+    successSection({ success, message }) {
+        if (success) {
+            this.setState({
+                success,
+                error: false,
+                message,
+            });
+        } else {
+            this.setState({
+                success,
+                error: true,
+                message,
+            });
+        }
     }
 
     displaySections(classes) {
         const id = this.props.match.params.id;
-        if (this.state.loading) {
-            return (
-                <GridContainer justify="center">
-                    <GridItem
-                        xs={12}
-                        sm={12}
-                        md={6}
-                        className={classes.textCenter}
-                    >
-                        <Spinner size="3x" text="Loading" />
-                    </GridItem>
-                </GridContainer>
-            );
-        }
-        if (!this.state.loading && !this.state.success) {
+        if (!this.state.success) {
             return (
                 <FromSection id={id} success={this.successSection.bind(this)} />
             );
         }
 
-        if (this.state.success && !this.state.loading) {
+        if (this.state.success) {
             return (
                 <Thankyou
-                    title="Thank You For Registering"
+                    title={`${this.state.message}.Thank you for joining us`}
                     description="We assumed that you would like know about updates, so we
                         added you to list of people that we inform about new
                         things. If you wish to get those update emails click the
                         link in the email we sent."
+                />
+            );
+        }
+
+        if (this.state.error) {
+            return (
+                <ErrorHandler
+                    title={`${this.state.message}`}
+                    description="Relax, you are still with us."
                 />
             );
         }

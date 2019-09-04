@@ -14,7 +14,6 @@ const {
 // => Models
 const HackerModel = require("../models/hacker.js");
 const HackathonModel = require("../models/hackathon.js");
-const SkillModel = require("../models/skill.js");
 const MemberModel = require("../models/member.js");
 
 // => Hacker
@@ -37,19 +36,7 @@ const HackerType = new GraphQLObjectType({
                     _id: parent.id
                 })
                     .populate("hackathons")
-                    .then(hacker =>
-                        hacker.hackathons.map(hackathon => hackathon)
-                    );
-            }
-        },
-        skills: {
-            type: new GraphQLList(SkillType),
-            resolve(parent, args) {
-                return HackerSkillModel.findById({
-                    _id: parent.id
-                })
-                    .populate("skills")
-                    .then(hacker => hacker.skills.map(skill => skill));
+                    .then(hacker => hacker.hackathons);
             }
         }
     })
@@ -62,7 +49,8 @@ const HackerInputType = new GraphQLInputObjectType({
         phone: { type: GraphQLString },
         email: { type: GraphQLString },
         job_title: { type: GraphQLString },
-        company: { type: GraphQLString }
+        company: { type: GraphQLString },
+        hackathon_id: { type: GraphQLID }
     }
 });
 
@@ -177,24 +165,6 @@ const MemberMailInputType = new GraphQLInputObjectType({
     }
 });
 
-// => Skill
-const SkillType = new GraphQLObjectType({
-    name: "Skill",
-    fields: () => ({
-        id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        level: { type: GraphQLInt }
-    })
-});
-
-const SkillInputType = new GraphQLInputObjectType({
-    name: "SkillInputType",
-    fields: {
-        name: { type: GraphQLString },
-        level: { type: GraphQLInt }
-    }
-});
-
 // => Message
 const MessageType = new GraphQLObjectType({
     name: "Message",
@@ -233,8 +203,6 @@ module.exports = {
     HackerInputType,
     HackathonType,
     HackathonInputType,
-    SkillType,
-    SkillInputType,
     MemberType,
     MemberInputType,
     MessageType,

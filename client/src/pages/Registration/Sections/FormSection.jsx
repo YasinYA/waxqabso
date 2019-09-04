@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Query } from 'react-apollo';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -17,15 +16,11 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import GridContainer from 'components/Grid/GridContainer.jsx';
 import GridItem from 'components/Grid/GridItem.jsx';
 import CustomInput from 'components/CustomInput/CustomInput.jsx';
-import Checkbox from 'components/CustomInput/CustomCheckbox.jsx';
 import Button from 'components/CustomButtons/Button.jsx';
 import Danger from 'components/Typography/Danger.jsx';
 import { Spinner } from 'components/Common';
 
 import { addHacker } from '../../../apolloClient/mutations/hackerMutations.js';
-import { addHackathonHacker } from '../../../apolloClient/mutations/hackathonHackerMutations.js';
-import { addHackerSkill } from '../../../apolloClient/mutations/hackerSkillMutation.js';
-import { skills } from '../../../apolloClient/queries/skillsQueries.js';
 
 import registrationFormStyle from 'assets/jss/material-kit-react/views/registrationPageSections/registrationFormStyle.jsx';
 import styles from 'assets/jss/material-kit-react/customCheckboxRadioSwitch.jsx';
@@ -38,8 +33,8 @@ const registrationSchema = Yup.object().shape({
     email: Yup.string()
         .email('Email is invalid')
         .required('Email is required'),
-    job_title: Yup.string().required('Job Title is required'),
-    company: Yup.string().required('Company is required'),
+    job_title: Yup.string().required('Title/Year is required'),
+    company: Yup.string().required('Company/Uni is required'),
 });
 
 class FormSection extends React.Component {
@@ -72,7 +67,6 @@ class FormSection extends React.Component {
                                 email: '',
                                 job_title: '',
                                 company: '',
-                                skills: [],
                             }}
                             onSubmit={(values, actions) => {
                                 client
@@ -84,38 +78,12 @@ class FormSection extends React.Component {
                                             email: values.email,
                                             job_title: values.job_title,
                                             company: values.company,
+                                            hackathon_id: id,
                                         },
                                     })
                                     .then(({ data }) => {
-                                        client
-                                            .mutate({
-                                                mutation: addHackathonHacker,
-                                                variables: {
-                                                    hackathonId: id,
-                                                    hackerId: data.addHacker.id,
-                                                },
-                                            })
-                                            .then(result => {
-                                                values.skills.forEach(skill => {
-                                                    client
-                                                        .mutate({
-                                                            mutation: addHackerSkill,
-                                                            variables: {
-                                                                hackerId:
-                                                                    data
-                                                                        .addHacker
-                                                                        .id,
-                                                                skillId: skill,
-                                                            },
-                                                        })
-                                                        .then(hackerSkill => {
-                                                            console.log(
-                                                                'added',
-                                                            );
-                                                        });
-                                                    this.props.success(true);
-                                                });
-                                            });
+                                        console.log(data);
+                                        this.props.success(data.addHacker);
                                     });
                             }}
                             render={({
@@ -227,7 +195,7 @@ class FormSection extends React.Component {
                                                     md={6}
                                                 >
                                                     <CustomInput
-                                                        labelText="Job Title"
+                                                        labelText="Title/Year in Uni"
                                                         id="job_title"
                                                         name="job_title"
                                                         type="text"
@@ -247,77 +215,10 @@ class FormSection extends React.Component {
                                                 <GridItem
                                                     xs={12}
                                                     sm={12}
-                                                    md={12}
-                                                >
-                                                    <p
-                                                        className={
-                                                            classes.skillLabel
-                                                        }
-                                                    >
-                                                        Choose your skills
-                                                    </p>
-                                                    <br />
-                                                    <Query query={skills}>
-                                                        {({
-                                                            loading,
-                                                            error,
-                                                            data,
-                                                        }) => {
-                                                            if (loading) {
-                                                                return (
-                                                                    <div
-                                                                        className={
-                                                                            classes.container
-                                                                        }
-                                                                    >
-                                                                        <GridContainer justify="center">
-                                                                            <GridItem
-                                                                                xs={
-                                                                                    12
-                                                                                }
-                                                                                sm={
-                                                                                    12
-                                                                                }
-                                                                                md={
-                                                                                    6
-                                                                                }
-                                                                            >
-                                                                                <Spinner size="3x" />
-                                                                            </GridItem>
-                                                                        </GridContainer>
-                                                                    </div>
-                                                                );
-                                                            } else {
-                                                                return data.skills.map(
-                                                                    skill => (
-                                                                        <Checkbox
-                                                                            key={
-                                                                                skill.id
-                                                                            }
-                                                                            classes={
-                                                                                classes
-                                                                            }
-                                                                            name="skills"
-                                                                            label={
-                                                                                skill.name
-                                                                            }
-                                                                            value={
-                                                                                skill.id
-                                                                            }
-                                                                        />
-                                                                    ),
-                                                                );
-                                                            }
-                                                        }}
-                                                    </Query>
-                                                </GridItem>
-                                                <GridItem
-                                                    xs={12}
-                                                    sm={12}
                                                     md={6}
                                                 >
                                                     <CustomInput
-                                                        labelText="Company"
+                                                        labelText="Company/Uni"
                                                         id="company"
                                                         name="company"
                                                         type="text"

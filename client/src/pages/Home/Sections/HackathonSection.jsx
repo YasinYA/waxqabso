@@ -20,7 +20,8 @@ class HackathonSection extends React.Component {
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={12}>
                             <Hackathons
-                                buttonText="More Info"
+                                buttonText="Register"
+                                path="register"
                                 finished={false}
                                 {...this.props}
                             />

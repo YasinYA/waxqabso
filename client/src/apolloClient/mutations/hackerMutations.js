@@ -7,6 +7,7 @@ const addHacker = gql`
         $email: String!
         $job_title: String!
         $company: String!
+        $hackathon_id: ID!
     ) {
         addHacker(
             input: {
@@ -15,10 +16,11 @@ const addHacker = gql`
                 email: $email
                 job_title: $job_title
                 company: $company
+                hackathon_id: $hackathon_id
             }
         ) {
-            id
-            name
+            success
+            message
         }
     }
 `;

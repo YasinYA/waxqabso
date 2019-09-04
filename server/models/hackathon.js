@@ -10,10 +10,12 @@ const hackathonSchema = new Schema({
         type: String,
         unique: true
     },
-    hackers: {
-        type: Schema.Types.ObjectId,
-        ref: "Hacker"
-    },
+    hackers: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Hacker"
+        }
+    ],
     description: {
         type: String
     },

@@ -25,7 +25,6 @@ class UnSubHackerPage extends React.Component {
         this.state = {
             loading: true,
             success: false,
-            redirect: false,
             token: this.props.match.params.token,
         };
     }
@@ -33,7 +32,6 @@ class UnSubHackerPage extends React.Component {
     successSection(success) {
         this.setState({
             success,
-            redirect: success,
             loading: false,
         });
     }
@@ -76,7 +74,6 @@ class UnSubHackerPage extends React.Component {
                 <div className={classNames(classes.main)}>
                     <div className={classes.container}>
                         <div className={classes.section}>
-                            {this.displaySections()}
                             {this.state.success && !this.state.loading ? (
                                 <Thankyou
                                     title="Un-Subscribed Successfully."
@@ -90,6 +87,7 @@ class UnSubHackerPage extends React.Component {
                                         md={6}
                                         className={classes.textCenter}
                                     >
+                                        {this.displaySections()}
                                         <Spinner
                                             size="3x"
                                             text="Un-Subscribing..."
@@ -97,7 +95,6 @@ class UnSubHackerPage extends React.Component {
                                     </GridItem>
                                 </GridContainer>
                             )}
-                            {this.state.redirect && <Redirect to="/" />}
                         </div>
                     </div>
                 </div>

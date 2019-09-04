@@ -10,14 +10,12 @@ const hackerSchema = new Schema({
         type: String,
         unique: true
     },
-    hackathons: {
-        type: Schema.Types.ObjectId,
-        ref: "Hackathon"
-    },
-    skills: {
-        type: Schema.Types.ObjectId,
-        ref: "Skill"
-    },
+    hackathons: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Hackathon"
+        }
+    ],
     subscribed: {
         type: Boolean,
         default: true

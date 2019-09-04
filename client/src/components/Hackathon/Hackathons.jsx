@@ -9,10 +9,6 @@ import { hackathons } from '../../apolloClient/queries/hackathonQueries.js';
 import Hackathon from './Hackathon.jsx';
 
 class Hackathons extends Component {
-    hackathonUrl(arg) {
-        return `/hackathon/${arg}`;
-    }
-
     displayHackathons() {
         const { classes, finished } = this.props;
         return (
@@ -26,6 +22,7 @@ class Hackathons extends Component {
                                 <Hackathon
                                     key={hackathon.id}
                                     hackathon={hackathon}
+                                    path={this.props.path}
                                     classes={classes}
                                     buttonText={this.props.buttonText}
                                 />
