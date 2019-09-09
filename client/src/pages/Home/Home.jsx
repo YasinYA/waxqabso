@@ -19,6 +19,7 @@ import homePageStyle from 'assets/jss/material-kit-react/views/homePage.jsx';
 // Sections for this page
 import WhatWeDoSection from './Sections/WhatWeDoSection.jsx';
 import HackathonSection from './Sections/HackathonSection.jsx';
+import WorkshopSection from './Sections/WorkshopSection.jsx'
 import FinishedHackathonSection from './Sections/FinishedHackathonSection.jsx';
 import CallToActionSection from './Sections/CallToActionSection.jsx';
 import SponsorSection from './Sections/SponsorSection.jsx';
@@ -55,6 +56,7 @@ class HomePage extends React.Component {
                 <div className={classNames(classes.main)}>
                     <div className={classes.container}>
                         <WhatWeDoSection />
+                        <WorkshopSection />
                         <HackathonSection />
                         <FinishedHackathonSection />
                         <CallToActionSection />
