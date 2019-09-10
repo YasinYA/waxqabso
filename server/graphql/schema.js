@@ -6,6 +6,7 @@ const hackathonSchema = require("./hackathonSchema.js");
 const hackerSchema = require("./hackerSchema.js");
 const memberSchema = require("./memberSchema.js");
 const messageSchema = require("./messageSchema.js");
+const attendeeSchema = require("./attendeeSchema.js");
 
 // => Queries and Mutations
 const RootQuery = new GraphQLObjectType({
@@ -14,7 +15,8 @@ const RootQuery = new GraphQLObjectType({
         ...hackathonSchema.queryFields,
         ...hackerSchema.queryFields,
         ...memberSchema.queryFields,
-        ...messageSchema.queryFields
+        ...messageSchema.queryFields,
+        ...attendeeSchema.queryFields
     }
 });
 
@@ -24,7 +26,8 @@ const Mutation = new GraphQLObjectType({
         ...hackathonSchema.mutationFields,
         ...hackerSchema.mutationFields,
         ...memberSchema.mutationFields,
-        ...messageSchema.mutationFields
+        ...messageSchema.mutationFields,
+        ...attendeeSchema.mutationFields
     }
 });
 
