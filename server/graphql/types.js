@@ -15,6 +15,29 @@ const {
 const HackerModel = require("../models/hacker.js");
 const HackathonModel = require("../models/hackathon.js");
 const MemberModel = require("../models/member.js");
+const AttendeeModel = require("../models/attendee.js");
+
+// => Attendee
+const AttendeeType = new GraphQLObjectType({
+    name: "Attendee",
+    fields: () => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        phone: { type: GraphQLString },
+        email: { type: GraphQLString },
+        occupation: { type: GraphQLString }
+    })
+});
+
+const AttendeeInputType = new GraphQLInputObjectType({
+    name: "AttendeeInputType",
+    fields: {
+        name: { type: GraphQLString },
+        phone: { type: GraphQLString },
+        email: { type: GraphQLString },
+        occupation: { type: GraphQLString }
+    }
+});
 
 // => Hacker
 const HackerType = new GraphQLObjectType({
@@ -199,6 +222,8 @@ const ResultType = new GraphQLObjectType({
 });
 
 module.exports = {
+    AttendeeType,
+    AttendeeInputType,
     HackerType,
     HackerInputType,
     HackathonType,

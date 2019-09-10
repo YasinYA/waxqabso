@@ -1,5 +1,6 @@
 import HomePage from './pages/Home/Home.jsx';
 import AboutPage from './pages/About/About.jsx';
+import WorkshopPage from './pages/Workshop/Workshop.jsx';
 import ContactPage from './pages/Contact/Contact.jsx';
 import DetialPage from './pages/Hackathon/Details.jsx';
 import RegistrationPage from './pages/Registration/RegistrationPage.jsx';
@@ -20,6 +21,10 @@ const routes = [
     {
         path: '/contact',
         component: ContactPage,
+    },
+    {
+        path: '/workshop',
+        component: WorkshopPage,
     },
     {
         path: '/hackathon/:id',
