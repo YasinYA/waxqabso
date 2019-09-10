@@ -4,8 +4,6 @@ import classNames from 'classnames';
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 
-// @material-ui/icons
-
 // core components
 import GridContainer from 'components/Grid/GridContainer.jsx';
 import GridItem from 'components/Grid/GridItem.jsx';
@@ -45,31 +43,43 @@ class WorkshopPage extends React.Component {
     }
 
     displaySections(classes) {
-        const id = this.props.match.params.id;
         if (!this.state.success) {
-            return (
-                <Form id={id} success={this.successSection.bind(this)} />
-            );
+            return <Form success={this.successSection.bind(this)} />;
         }
 
         if (this.state.success) {
             return (
-                <Thankyou
-                    title={`${this.state.message}.Thank you for joining us`}
-                    description="We assumed that you would like know about updates, so we
-                        added you to list of people that we inform about new
-                        things. If you wish to get those update emails click the
-                        link in the email we sent."
-                />
+                <GridContainer justify="center">
+                    <GridItem xs={12} sm={12} md={6}>
+                        <Thankyou
+                            title={`${this.state.message}.Thank you for joining us`}
+                            description="We assumed that you would like know about updates, so we
+                                added you to list of people that we inform about new
+                                things."
+                        />
+                    </GridItem>
+                </GridContainer>
             );
         }
 
         if (this.state.error) {
             return (
-                <ErrorHandler
-                    title={`${this.state.message}`}
-                    description="Relax, you are still with us."
-                />
+                <GridContainer justify="center">
+                    <GridItem
+                        xs={12}
+                        sm={12}
+                        md={6}
+                        className={classNames(
+                            classes.textCenter,
+                            classes.title,
+                        )}
+                    >
+                        <ErrorHandler
+                            title={`${this.state.message}`}
+                            description="Tells us about the error you faced in the Contact us form"
+                        />
+                    </GridItem>
+                </GridContainer>
             );
         }
     }
@@ -80,7 +90,7 @@ class WorkshopPage extends React.Component {
             <div>
                 <Parallax
                     filter
-                    image={require('../../assets/img/registration-bg.jpg')}
+                    image={require('../../assets/img/workshop.jpg')}
                 >
                     <div className={classes.container}>
                         <GridContainer>
@@ -91,7 +101,7 @@ class WorkshopPage extends React.Component {
                                         classes.textCenter,
                                     )}
                                 >
-                                    Hackers Registering For Hackathons
+                                    Registering For Workshop
                                 </h1>
                             </GridItem>
                         </GridContainer>
@@ -106,6 +116,5 @@ class WorkshopPage extends React.Component {
         );
     }
 }
-
 
 export default withStyles(registrationPageStyle)(WorkshopPage);

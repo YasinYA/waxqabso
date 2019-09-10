@@ -23,6 +23,10 @@ const routes = [
         component: ContactPage,
     },
     {
+        path: '/workshop',
+        component: WorkshopPage,
+    },
+    {
         path: '/hackathon/:id',
         component: DetialPage,
     },

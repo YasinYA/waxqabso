@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -20,12 +19,12 @@ import Button from 'components/CustomButtons/Button.jsx';
 import Danger from 'components/Typography/Danger.jsx';
 import { Spinner } from 'components/Common';
 
-import { addWorkshopMember } from '../../../apolloClient/mutations/workshopMutations.js';
+import { addAttendee } from '../../../apolloClient/mutations/attendeeMutations.js';
 
 import registrationFormStyle from 'assets/jss/material-kit-react/views/registrationPageSections/registrationFormStyle.jsx';
 import styles from 'assets/jss/material-kit-react/customCheckboxRadioSwitch.jsx';
 
-const registrationSchema = Yup.object().shape({
+const attendeeSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     phone: Yup.number('Phone number can not contain letters')
         .typeError('Phone number can not contain letters')
@@ -33,13 +32,12 @@ const registrationSchema = Yup.object().shape({
     email: Yup.string()
         .email('Email is invalid')
         .required('Email is required'),
-    job_title: Yup.string().required('Title/Year is required'),
-    company: Yup.string().required('Company/Uni is required'),
+    occupation: Yup.string().required('Occupation is required'),
 });
 
 class Form extends React.Component {
     render() {
-        const { classes, id } = this.props;
+        const { classes } = this.props;
         return (
             <div className={classes.section}>
                 <GridContainer justify="center">
@@ -53,35 +51,32 @@ class Form extends React.Component {
                             Workshop Registration Form
                         </h2>
                         <h4 className={classes.description}>
-                            If you are interesting in coding.
-                            We welcoming you Please register.
+                            If you are interested in coding, We are welcoming
+                            you. Please register.
                         </h4>
 
                         <Formik
-                            validationSchema={registrationSchema}
+                            validationSchema={attendeeSchema}
                             initialValues={{
                                 name: '',
                                 phone: '',
                                 email: '',
-                                job_title: '',
-                                company: '',
+                                occupation: '',
                             }}
                             onSubmit={(values, actions) => {
                                 client
                                     .mutate({
-                                        mutation: addWorkshopMember,
+                                        mutation: addAttendee,
                                         variables: {
                                             name: values.name,
                                             phone: values.phone,
                                             email: values.email,
-                                            job_title: values.job_title,
-                                            company: values.company,
-                                            hackathon_id: id,
+                                            occupation: values.occupation,
                                         },
                                     })
                                     .then(({ data }) => {
                                         console.log(data);
-                                        this.props.success(data.addWorkshopMember);
+                                        this.props.success(data.addAttendee);
                                     });
                             }}
                             render={({
@@ -193,43 +188,22 @@ class Form extends React.Component {
                                                     md={6}
                                                 >
                                                     <CustomInput
-                                                        labelText="Title/Year in Uni"
-                                                        id="job_title"
-                                                        name="job_title"
+                                                        labelText="Occupation"
+                                                        id="occupation"
+                                                        name="occupation"
                                                         type="text"
                                                         onChange={handleChange}
-                                                        value={values.job_title}
+                                                        value={
+                                                            values.occupation
+                                                        }
                                                         formControlProps={{
                                                             fullWidth: true,
                                                         }}
                                                     />
-                                                    {errors.job_title &&
-                                                    touched.job_title ? (
+                                                    {errors.occupation &&
+                                                    touched.occupation ? (
                                                         <Danger>
-                                                            {errors.job_title}
-                                                        </Danger>
-                                                    ) : null}
-                                                </GridItem>
-                                                <GridItem
-                                                    xs={12}
-                                                    sm={12}
-                                                    md={6}
-                                                >
-                                                    <CustomInput
-                                                        labelText="Company/Uni"
-                                                        id="company"
-                                                        name="company"
-                                                        type="text"
-                                                        onChange={handleChange}
-                                                        value={values.company}
-                                                        formControlProps={{
-                                                            fullWidth: true,
-                                                        }}
-                                                    />
-                                                    {errors.company &&
-                                                    touched.company ? (
-                                                        <Danger>
-                                                            {errors.company}
+                                                            {errors.occupation}
                                                         </Danger>
                                                     ) : null}
                                                 </GridItem>
